@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Downloader | All-in-One</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+        }
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --facebook: #1877f2;
+            --instagram: #e4405f;
+            --tiktok: #000000;
+            --spotify: #1db954;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --card-bg: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        /* Header Styles */
+        .header {
+            text-align: center;
+            padding: 25px 0;
+            margin-bottom: 25px;
+        }
+        
+        .logo {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            background: linear-gradient(90deg, var(--primary), #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            color: #94a3b8;
+            font-size: 1rem;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        /* Platform Selector */
+        .platform-selector {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .selector-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: #cbd5e1;
+            font-size: 1.1rem;
+        }
+        
+        .platform-tabs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        
+        .platform-tab {
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 15px 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #94a3b8;
+        }
+        
+        .platform-tab.active {
+            background: var(--card-bg);
+            border-color: var(--primary);
+            color: var(--dark);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .platform-icon {
+            font-size: 1.8rem;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .facebook-icon { background: var(--facebook); color: white; }
+        .instagram-icon { background: linear-gradient(45deg, #405de6, #e4405f, #ffdc80); color: white; }
+        .tiktok-icon { background: var(--tiktok); color: white; }
+        .spotify-icon { background: var(--spotify); color: white; }
+        
+        /* Main Card */
+        .main-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .card-header {
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .current-platform {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .current-platform i {
+            font-size: 1.8rem;
+        }
+        
+        .input-section {
+            padding: 25px;
+        }
+        
+        .url-input-container {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        
+        .url-input {
+            width: 100%;
+            padding: 18px 20px 18px 55px;
+            background: #f1f5f9;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            font-size: 1rem;
+            color: var(--dark);
+            transition: all 0.3s;
+        }
+        
+        .url-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+        
+        .url-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-size: 1.2rem;
+        }
+        
+        .download-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+        
+        .download-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        /* Loading Animation */
+        .loading-container {
+            display: none;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .loader {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+        
+        .loader-circle {
+            width: 100%;
+            height: 100%;
+            border: 5px solid rgba(99, 102, 241, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Result Container */
+        .result-container {
+            display: none;
+            padding: 25px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .media-preview {
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .media-preview img {
+            width: 100%;
+            display: block;
+        }
+        
+        .media-info {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            color: var(--dark);
+        }
+        
+        .media-info h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .media-details {
+            display: flex;
+            justify-content: space-between;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        
+        .download-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .download-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            color: var(--dark);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .download-option:hover {
+            background: #e2e8f0;
+            transform: translateX(5px);
+        }
+        
+        .option-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .option-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .hd-icon { background: linear-gradient(45deg, #10b981, #059669); }
+        .sd-icon { background: linear-gradient(45deg, #3b82f6, #1d4ed8); }
+        .audio-icon { background: linear-gradient(45deg, #8b5cf6, #7c3aed); }
+        
+        .option-text h4 {
+            font-size: 1.1rem;
+            margin-bottom: 3px;
+        }
+        
+        .option-text span {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        
+        .download-arrow {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        /* Error Container */
+        .error-container {
+            display: none;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .error-box {
+            background: #fef2f2;
+            border-left: 5px solid #dc2626;
+            padding: 20px;
+            border-radius: 12px;
+            color: #7f1d1d;
+        }
+        
+        .error-icon {
+            font-size: 2.5rem;
+            color: #dc2626;
+            margin-bottom: 15px;
+        }
+        
+        /* Toggle Switch */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #334155;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+        
+        /* Dark Mode Variant (for toggle) */
+        body.dark-mode {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        .dark-mode .main-card {
+            background: #1e293b;
+            color: var(--light);
+        }
+        
+        .dark-mode .media-info {
+            background: #334155;
+            color: var(--light);
+        }
+        
+        .dark-mode .download-option {
+            background: #334155;
+            color: var(--light);
+        }
+        
+        .dark-mode .option-text span {
+            color: #94a3b8;
+        }
+        
+        .dark-mode .url-input {
+            background: #334155;
+            border-color: #475569;
+            color: var(--light);
+        }
+        
+        .dark-mode .url-input:focus {
+            background: #475569;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 25px 0;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .footer-link {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.3s;
+        }
+        
+        .footer-link:hover {
+            color: var(--primary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .logo {
+                font-size: 2.2rem;
+            }
+            
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .platform-tabs {
+                gap: 8px;
+            }
+            
+            .platform-tab {
+                padding: 12px 5px;
+                font-size: 0.8rem;
+            }
+            
+            .platform-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 1.4rem;
+            }
+            
+            .card-header {
+                padding: 20px;
+            }
+            
+            .input-section {
+                padding: 20px;
+            }
+            
+            .download-btn {
+                padding: 18px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-download"></i>
+                </div>
+                <span>Social Downloader</span>
+            </div>
+            <h1>All-in-One Media Downloader</h1>
+            <p class="tagline">Download videos & audio from Facebook, Instagram, TikTok, and Spotify</p>
+        </div>
+        
+        <!-- Platform Selector -->
+        <div class="platform-selector">
+            <div class="selector-label">
+                <i class="fas fa-th-large"></i>
+                <span>Select Platform:</span>
+            </div>
+            <div class="platform-tabs">
+                <div class="platform-tab active" data-platform="facebook">
+                    <div class="platform-icon facebook-icon">
+                        <i class="fab fa-facebook-f"></i>
+                    </div>
+                </div>
+                <div class="platform-tab" data-platform="instagram">
+                    <div class="platform-icon instagram-icon">
+                        <i class="fab fa-instagram"></i>
+                    </div>
+                    
+                </div>
+                <div class="platform-tab" data-platform="tiktok">
+                    <div class="platform-icon tiktok-icon">
+                        <i class="fab fa-tiktok"></i>
+                    </div>
+                  
+                </div>
+                <div class="platform-tab" data-platform="spotify">
+                    <div class="platform-icon spotify-icon">
+                        <i class="fab fa-spotify"></i>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Card -->
+        <div class="main-card">
+            <div class="card-header">
+                <div class="current-platform" id="currentPlatform">
+                    <i class="fab fa-facebook-f"></i>
+                    <span>Facebook Downloader</span>
+                </div>
+            </div>
+            
+            <!-- Input Section -->
+            <div class="input-section" id="inputSection">
+                <div class="url-input-container">
+                    <i class="fas fa-link url-icon" id="urlIcon"></i>
+                    <input type="url" class="url-input" id="urlInput" placeholder="Paste video/audio link here..." autocomplete="off">
+                </div>
+                <button class="download-btn" id="downloadBtn">
+                    <i class="fas fa-download"></i>
+                    <span id="downloadBtnText">Download Facebook Video</span>
+                </button>
+            </div>
+            
+            <!-- Loading Animation -->
+            <div class="loading-container" id="loadingContainer">
+                <div class="loader">
+                    <div class="loader-circle"></div>
+                </div>
+                <p id="loadingText">Processing your request...</p>
+            </div>
+            
+            <!-- Results Section -->
+            <div class="result-container" id="resultContainer">
+                <div class="media-preview" id="mediaPreview">
+                    <!-- Preview will be inserted here -->
+                </div>
+                
+                <div class="media-info">
+                    <h3 id="mediaTitle">Media Title</h3>
+                    <p id="mediaDescription">Media description will appear here</p>
+                    <div class="media-details">
+                        <span id="mediaQuality">HD Quality</span>
+                        <span id="mediaDuration">Duration: 0:00</span>
+                    </div>
+                </div>
+                
+                <div class="download-options" id="downloadOptions">
+                    <!-- Download options will be inserted here -->
+                </div>
+            </div>
+            
+            <!-- Error Section -->
+            <div class="error-container" id="errorContainer">
+                <div class="error-box">
+                    <div class="error-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>Error</h3>
+                    <p id="errorMessage">An error occurred while processing your request.</p>
+                    <button class="download-btn" id="retryBtn" style="margin-top: 15px;">
+                        <i class="fas fa-redo"></i> Try Again
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dark Mode Toggle -->
+        <div class="toggle-container">
+            <span>Light Mode</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="slider"></span>
+            </label>
+            <span>Dark Mode</span>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2023 Social Media Downloader | All-in-One Tool</p>
+            <p>For personal use only. Respect copyrights.</p>
+            <div class="footer-links">
+                <a href="#" class="footer-link">Privacy Policy</a>
+                <a href="#" class="footer-link">Terms of Service</a>
+                <a href="#" class="footer-link">Contact</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const platformTabs = document.querySelectorAll('.platform-tab');
+            const currentPlatform = document.getElementById('currentPlatform');
+            const urlInput = document.getElementById('urlInput');
+            const urlIcon = document.getElementById('urlIcon');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const downloadBtnText = document.getElementById('downloadBtnText');
+            const loadingContainer = document.getElementById('loadingContainer');
+            const loadingText = document.getElementById('loadingText');
+            const resultContainer = document.getElementById('resultContainer');
+            const errorContainer = document.getElementById('errorContainer');
+            const errorMessage = document.getElementById('errorMessage');
+            const retryBtn = document.getElementById('retryBtn');
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            
+            // API Configuration
+            const apiConfig = {
+                facebook: {
+                    name: 'Facebook',
+                    icon: 'fab fa-facebook-f',
+                    color: '#1877f2',
+                    endpoint: 'https://rapido.initd.asia/api/fbdl',
+                    placeholder: 'Paste Facebook video link...',
+                    apiKey: 'zk-b40a2070f09ea168d47573b68285c714073a4b61e1486c2fd1832f987e0dc4a6'
+                },
+                instagram: {
+                    name: 'Instagram',
+                    icon: 'fab fa-instagram',
+                    color: '#e4405f',
+                    endpoint: 'https://rapido.initd.asia/api/igdl',
+                    placeholder: 'Paste Instagram video/reel link...',
+                    apiKey: 'zk-b40a2070f09ea168d47573b68285c714073a4b61e1486c2fd1832f987e0dc4a6'
+                },
+                tiktok: {
+                    name: 'TikTok',
+                    icon: 'fab fa-tiktok',
+                    color: '#000000',
+                    endpoint: 'https://rapido.initd.asia/api/tikdl',
+                    placeholder: 'Paste TikTok video link...',
+                    apiKey: 'zk-b40a2070f09ea168d47573b68285c714073a4b61e1486c2fd1832f987e0dc4a6'
+                },
+                spotify: {
+                    name: 'Spotify',
+                    icon: 'fab fa-spotify',
+                    color: '#1db954',
+                    endpoint: 'https://rapido.initd.asia/api/spdlv2',
+                    placeholder: 'Paste Spotify track/playlist link...',
+                    apiKey: 'zk-b40a2070f09ea168d47573b68285c714073a4b61e1486c2fd1832f987e0dc4a6'
+                }
+            };
+            
+            let currentPlatformType = 'facebook';
+            
+            // Platform Switching
+            platformTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const platform = this.dataset.platform;
+                    
+                    // Update active tab
+                    platformTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update platform
+                    switchPlatform(platform);
+                });
+            });
+            
+            function switchPlatform(platform) {
+                currentPlatformType = platform;
+                const config = apiConfig[platform];
+                
+                // Update UI
+                currentPlatform.innerHTML = `
+                    <i class="${config.icon}"></i>
+                    <span>${config.name} Downloader</span>
+                `;
+                
+                // Update input placeholder
+                urlInput.placeholder = config.placeholder;
+                
+                // Update button text
+                downloadBtnText.textContent = `Download ${config.name} ${platform === 'spotify' ? 'Audio' : 'Video'}`;
+                
+                // Update URL icon color
+                urlIcon.style.color = config.color;
+                
+                // Clear previous results
+                hideAllContainers();
+                urlInput.value = '';
+                
+                // Set example URL
+                setExampleUrl(platform);
+            }
+            
+            function setExampleUrl(platform) {
+                const examples = {
+                    facebook: 'https://www.facebook.com/share/v/17qGDYN5F3/',
+                    instagram: 'https://www.instagram.com/reel/Cxample123/',
+                    tiktok: 'https://www.tiktok.com/@user/video/123456789',
+                    spotify: 'https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT'
+                };
+                
+                // Uncomment to auto-fill example URL (for testing)
+                // urlInput.value = examples[platform];
+            }
+            
+            // Download Button Handler
+            downloadBtn.addEventListener('click', processDownload);
+            
+            // Retry Button Handler
+            retryBtn.addEventListener('click', function() {
+                errorContainer.style.display = 'none';
+                processDownload();
+            });
+            
+            // Enter key support
+            urlInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    processDownload();
+                }
+            });
+            
+            // Paste detection
+            urlInput.addEventListener('paste', function(e) {
+                setTimeout(() => {
+                    if (urlInput.value.trim()) {
+                        processDownload();
+                    }
+                }, 300);
+            });
+            
+            async function processDownload() {
+                const url = urlInput.value.trim();
+                const config = apiConfig[currentPlatformType];
+                
+                // Validate URL
+                if (!url) {
+                    showError('Please enter a valid URL');
+                    return;
+                }
+                
+                // Platform-specific validation
+                if (!validateUrl(url, currentPlatformType)) {
+                    showError(`Please enter a valid ${config.name} URL`);
+                    return;
+                }
+                
+                // Show loading, hide other containers
+                hideAllContainers();
+                loadingContainer.style.display = 'block';
+                loadingText.textContent = `Processing ${config.name} ${currentPlatformType === 'spotify' ? 'audio' : 'video'}...`;
+                
+                try {
+                    // Prepare API request
+                    const encodedUrl = encodeURIComponent(url);
+                    const apiUrl = `${config.endpoint}?url=${encodedUrl}&apikey=${config.apiKey}`;
+                    
+                    // Fetch data
+                    const response = await fetch(apiUrl);
+                    
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    // Process based on platform
+                    if (data.status === 'success' || data.result) {
+                        displayResult(data, currentPlatformType);
+                    } else if (data.error || data.message) {
+                        throw new Error(data.error || data.message || 'Unknown error');
+                    } else {
+                        throw new Error('Invalid response from server');
+                    }
+                    
+                } catch (error) {
+                    console.error('Download error:', error);
+                    showError(error.message || 'Failed to download. Please check the URL and try again.');
+                } finally {
+                    loadingContainer.style.display = 'none';
+                }
+            }
+            
+            function validateUrl(url, platform) {
+                const patterns = {
+                    facebook: /(facebook\.com|fb\.watch)/,
+                    instagram: /instagram\.com/,
+                    tiktok: /tiktok\.com/,
+                    spotify: /spotify\.com/
+                };
+                
+                return patterns[platform].test(url);
+            }
+            
+            function displayResult(data, platform) {
+                const config = apiConfig[platform];
+                const result = data.result || data;
+                
+                // Clear previous results
+                const mediaPreview = document.getElementById('mediaPreview');
+                const downloadOptions = document.getElementById('downloadOptions');
+                mediaPreview.innerHTML = '';
+                downloadOptions.innerHTML = '';
+                
+                // Set media title
+                document.getElementById('mediaTitle').textContent = 
+                    result.title || result.filename || `${config.name} ${platform === 'spotify' ? 'Audio' : 'Video'}`;
+                
+                // Set media description
+                document.getElementById('mediaDescription').textContent = 
+                    result.description || `Download ${config.name} ${platform === 'spotify' ? 'audio' : 'video'} in high quality`;
+                
+                // Set media details
+                if (result.duration) {
+                    document.getElementById('mediaDuration').textContent = `Duration: ${result.duration}`;
+                }
+                
+                // Create preview
+                if (result.thumbnail || result.image) {
+                    mediaPreview.innerHTML = `
+                        <img src="${result.thumbnail || result.image}" alt="Preview" onerror="this.style.display='none'">
+                    `;
+                } else {
+                    mediaPreview.innerHTML = `
+                        <div style="background: linear-gradient(135deg, ${config.color}20, ${config.color}40); 
+                             padding: 60px 20px; text-align: center; color: ${config.color};">
+                            <i class="${config.icon}" style="font-size: 3.5rem; margin-bottom: 15px;"></i>
+                            <p style="font-size: 1.1rem; font-weight: 600;">${config.name} Preview</p>
+                            <p style="font-size: 0.9rem; opacity: 0.8;">${platform === 'spotify' ? 'Audio' : 'Video'} is ready for download</p>
+                        </div>
+                    `;
+                }
+                
+                // Create download options based on platform
+                if (platform === 'spotify') {
+                    // Spotify audio download
+                    if (result.url || result.downloadUrl || result.audioUrl) {
+                        const audioUrl = result.url || result.downloadUrl || result.audioUrl;
+                        downloadOptions.innerHTML = `
+                            <a href="${audioUrl}" class="download-option" target="_blank" download>
+                                <div class="option-left">
+                                    <div class="option-icon audio-icon">
+                                        <i class="fas fa-music"></i>
+                                    </div>
+                                    <div class="option-text">
+                                        <h4>Download Audio</h4>
+                                        <span>MP3 Format • High Quality</span>
+                                    </div>
+                                </div>
+                                <div class="download-arrow">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                            </a>
+                        `;
+                    }
+                } else {
+                    // Video platforms (Facebook, Instagram, TikTok)
+                    const videoUrl = result.url || result.downloadUrl || result.videoUrl;
+                    const hdUrl = result.hd || result.hdUrl || videoUrl;
+                    const sdUrl = result.sd || result.sdUrl || videoUrl;
+                    
+                    downloadOptions.innerHTML = `
+                        <a href="${hdUrl}" class="download-option" target="_blank" download>
+                            <div class="option-left">
+                                <div class="option-icon hd-icon">
+                                    <i class="fas fa-hd"></i>
+                                </div>
+                                <div class="option-text">
+                                    <h4>Download HD</h4>
+                                    <span>High Definition • Best Quality</span>
+                                </div>
+                            </div>
+                            <div class="download-arrow">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                        </a>
+                        <a href="${sdUrl}" class="download-option" target="_blank" download>
+                            <div class="option-left">
+                                <div class="option-icon sd-icon">
+                                    <i class="fas fa-sd-card"></i>
+                                </div>
+                                <div class="option-text">
+                                    <h4>Download SD</h4>
+                                    <span>Standard Definition • Smaller Size</span>
+                                </div>
+                            </div>
+                            <div class="download-arrow">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                        </a>
+                    `;
+                    
+                    // Set quality info
+                    if (result.quality) {
+                        document.getElementById('mediaQuality').textContent = result.quality;
+                    }
+                }
+                
+                // Show result container
+                resultContainer.style.display = 'block';
+            }
+            
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorContainer.style.display = 'block';
+                
+                // Scroll to error
+                errorContainer.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            function hideAllContainers() {
+                loadingContainer.style.display = 'none';
+                resultContainer.style.display = 'none';
+                errorContainer.style.display = 'none';
+            }
+            
+            // Dark Mode Toggle
+            darkModeToggle.addEventListener('change', function() {
+                document.body.classList.toggle('dark-mode', this.checked);
+                
+                // Save preference to localStorage
+                localStorage.setItem('darkMode', this.checked);
+            });
+            
+            // Load dark mode preference
+            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+            darkModeToggle.checked = savedDarkMode;
+            document.body.classList.toggle('dark-mode', savedDarkMode);
+            
+            // Initialize with Facebook
+            switchPlatform('facebook');
+            
+            // Auto-focus input
+            setTimeout(() => {
+                urlInput.focus();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
